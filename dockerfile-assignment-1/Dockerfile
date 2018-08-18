@@ -36,17 +36,18 @@
 # better local development with more advanced topics
 # https://github.com/BretFisher/node-docker-good-defaults
 
-FROM mhart/alpine-node
+FROM node:6-alpine
 
 EXPOSE 3000
 
 RUN apk add --update tini && mkdir -p /usr/src/app
 
-COPY ./package.json /usr/src/app
+WORKDIR /usr/src/app
+
+COPY package.json package.json
 
 RUN npm install && npm cache clean --force
 
-COPY ["bin", "public", "routes", "views", "./"]
+COPY . .
 
-
-CMD ["tini", "--node" "./bin/www"]
+CMD ["tini", "--", "node",  "./bin/www"]
